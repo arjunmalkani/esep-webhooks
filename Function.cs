@@ -13,10 +13,11 @@ namespace EsepWebhook
     {
         public string FunctionHandler(string input, ILambdaContext context)
         {
+	    context.Logger.LogInformation($"FunctionHandler received: {input}");
+          
+	    dynamic json = JsonConvert.DeserializeObject<dynamic>(input);
 
-            dynamic json = JsonConvert.DeserializeObject<dynamic>(input);
-
-            string payload = $"{{\"text\":\"Issue Created: {json.issue.html_url}\"}}";
+	    string payload = $"{{'text':'Issue Created: {json.issue.html_url}'}}";
 
             var client = new HttpClient();
             var webRequest = new HttpRequestMessage(HttpMethod.Post, Environment.GetEnvironmentVariable("SLACK_URL"))
